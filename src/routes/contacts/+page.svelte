@@ -1,94 +1,112 @@
 <script>
-    import ContactForm from '$lib/components/ContactForm.svelte';
-    import ContactCard from '$lib/components/ContactCard.svelte';
     import { contactsStore } from '$lib/stores/contactsStore.js';
-
-    let editingContact = null;
-    let showFormModal = false;
-
-    function openEditModal(contact) {
-        editingContact = contact;
-        showFormModal = true;
+    import ContactCard from '$lib/components/ContactCard.svelte';
+    import ContactForm from '$lib/components/ContactForm.svelte';
+    
+    let showAddForm = false;
+    let currentEditingContact = null;
+    
+    function handleEdit(event) {
+      currentEditingContact = event.detail;
+      showAddForm = true;
     }
-    function closeEditModal() {
-        editingContact = null;
-        showFormModal = false;
+    
+    function closeForm() {
+      showAddForm = false;
+      currentEditingContact = null;
     }
-
-</script>
-
-{#if showFormModal}
-    <button class="modal-backdrop" on:click={closeEditModal} aria-label="Close" type="button">
-        <dialog class="modal-content" open on:click|stopPropagation on:keydown={(e) => e.key === 'Escape' && closeEditModal()} aria-label="Edit Contact">
-            <ContactForm {editingContact} />
-        </dialog>
-    </button>
-{/if}
-
-<div class="contact-list-cont">
-    {#each $contactsStore as contact (contact.id)}
-        <ContactCard {contact} on:edit={openEditModal} />
-    {/each}
-</div>
-
-<div class="add-contact-btn-cont">
-    <button class="add-contact-btn" on:click={() => showFormModal = true}>
+  </script>
+  
+  <main>
+    <div class="header">
+      <h1>Contact Manager</h1>
+      <button class="add-button" on:click={() => { showAddForm = true; currentEditingContact = null; }}>
         Add Contact
-    </button>
-</div>
-
-<style>
-    .modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      </button>
+    </div>
+    
+    {#if showAddForm}
+      <div class="modal-overlay">
+        <div class="modal-content">
+          <ContactForm 
+            editingContact={currentEditingContact} 
+            on:close={closeForm} 
+          />
+        </div>
+      </div>
+    {/if}
+    
+    <div class="contacts-list">
+      {#if $contactsStore.length === 0}
+        <p class="no-contacts">No contacts found. Add your first contact!</p>
+      {:else}
+        {#each $contactsStore as contact (contact.id)}
+          <ContactCard {contact} on:edit={handleEdit} />
+        {/each}
+      {/if}
+    </div>
+  </main>
+  
+  <style>
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
     }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .add-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .add-button:hover {
+      background-color: #0069d9;
+    }
+    
+    .contacts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .no-contacts {
+      text-align: center;
+      color: #666;
+      margin-top: 40px;
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    
     .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        max-width: 500px;
-        width: 100%;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-
-    .contact-list-cont {
-        padding: 80px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        width: 100%;
-
-    }
-
-    .add-contact-btn-cont {
-        position: fixed;
-        bottom: 80px; 
-        left: 0;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        z-index: 50; /* Must be below your modal z-index if any */
-        pointer-events: none; /* So clicks pass through if needed */
-    }
-
-    .add-contact-btn {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        pointer-events: auto; /* Enable click inside fixed container */
-    }
-    .add-contact-btn:active {
-        background-color: #0056b3;
-    }
-</style>
+  </style>
