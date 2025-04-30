@@ -8,7 +8,7 @@
     </div>
     <div class="topbar-actions">
         <button class="action-button">
-            <span class="settings-icon">menu</span>
+            <span class="settings-icon">Settings</span>
         </button>
     </div>
 </header>
