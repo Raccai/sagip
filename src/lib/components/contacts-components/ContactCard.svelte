@@ -33,7 +33,12 @@
 
 <div class="contact-card">
   <div class="contact-info">
-    <h3>{contact.name}</h3>
+    <h3>
+      {contact.name}
+      <span class="type-badge">
+        ({contact.type === "primary" ? "Primary" : "Secondary"})
+      </span>
+    </h3>
     <p><strong>Phone:</strong> {contact.number}</p>
     {#if contact.email}
       <p><strong>Email:</strong> {contact.email}</p>
@@ -61,6 +66,16 @@
   
   .contact-info {
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .contact-info p, 
+  .contact-info h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
   
   .contact-info h3 {
@@ -98,5 +113,12 @@
   
   .edit-btn:hover, .delete-btn:hover {
     opacity: 0.9;
+  }
+
+  .type-badge {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #888;
+    margin-left: 8px;
   }
 </style>

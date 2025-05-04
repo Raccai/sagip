@@ -1,6 +1,6 @@
 <script>
     import { hotlines } from '$lib/data/hotlines.js';
-    import HotlineCard from '$lib/components/HotlineCard.svelte';
+    import HotlineCard from '$lib/components/hotline-components/HotlineCard.svelte';
     import { onMount } from 'svelte';
 </script>
 

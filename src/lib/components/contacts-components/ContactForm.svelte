@@ -9,6 +9,7 @@
   let number = "";
   let email = "";
   let note = "";
+  let type = "primary"; // Default
   
   // Initialize form data whenever editingContact changes
   $: if (editingContact) {
@@ -17,6 +18,7 @@
     number = editingContact.number || "";
     email = editingContact.email || "";
     note = editingContact.note || "";
+    type = editingContact.type || "primary";
   } else {
     name = "";
     number = "";
@@ -50,7 +52,8 @@
         name,
         number,
         email,
-        note
+        note,
+        type
       });
       console.log("Contact updated:", editingContact.id);
     } else {
@@ -60,7 +63,8 @@
         name,
         number,
         email,
-        note
+        note,
+        type
       };
       contactsApi.addContact(newContact);
       console.log("New contact added:", newContact.id);
@@ -105,6 +109,14 @@
       bind:value={number}
       required
     >
+  </div>
+
+  <div class="form-group">
+    <label for="name">Contact Type</label>
+    <select id="type" bind:value={type}>
+      <option value="primary">Primary</option>
+      <option value="secondary">Secondary</option>
+    </select>
   </div>
   
   <div class="form-group">
